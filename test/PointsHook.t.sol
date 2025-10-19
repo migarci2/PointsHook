@@ -48,13 +48,12 @@ contract TestPointsHook is Test, Deployers, ERC1155TokenReceiver {
         token.approve(address(modifyLiquidityRouter), type(uint256).max);
 
         // Pool (ETH, TOKEN) with hook
-        (key, ) = initPool(ethCurrency, tokenCurrency, hook, 3000, SQRT_PRICE_1_1);
+        (key,) = initPool(ethCurrency, tokenCurrency, hook, 3000, SQRT_PRICE_1_1);
 
         // Provide liquidity (0.1 ETH) around +/- 60 ticks
         uint160 sqrtPriceAtTickUpper = TickMath.getSqrtPriceAtTick(60);
         uint256 ethToAdd = 0.1 ether;
-        uint128 liquidityDelta =
-            LiquidityAmounts.getLiquidityForAmount0(SQRT_PRICE_1_1, sqrtPriceAtTickUpper, ethToAdd);
+        uint128 liquidityDelta = LiquidityAmounts.getLiquidityForAmount0(SQRT_PRICE_1_1, sqrtPriceAtTickUpper, ethToAdd);
 
         modifyLiquidityRouter.modifyLiquidity{value: ethToAdd}(
             key,
