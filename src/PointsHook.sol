@@ -14,6 +14,27 @@ import {IPoolManager} from "v4-core/interfaces/IPoolManager.sol";
 
 import {Hooks} from "v4-core/libraries/Hooks.sol";
 
+library PointsHookPerms {
+    function permissions() internal pure returns (Hooks.Permissions memory) {
+        return Hooks.Permissions({
+            beforeInitialize: false,
+            afterInitialize:  false,
+            beforeAddLiquidity: false,
+            beforeRemoveLiquidity: false,
+            afterAddLiquidity:  false,
+            afterRemoveLiquidity:false,
+            beforeSwap: false,
+            afterSwap:  true,
+            beforeDonate: false,
+            afterDonate:  false,
+            beforeSwapReturnDelta: false,
+            afterSwapReturnDelta:  false,
+            afterAddLiquidityReturnDelta:    false,
+            afterRemoveLiquidityReturnDelta: false
+        });
+    }
+}
+
 contract PointsHook is BaseHook, ERC1155 {
     struct DayAccrual {
         uint64 day;
@@ -29,22 +50,7 @@ contract PointsHook is BaseHook, ERC1155 {
     // Set up hook permissions to return `true`
     // for the two hook functions we are using
     function getHookPermissions() public pure override returns (Hooks.Permissions memory) {
-        return Hooks.Permissions({
-            beforeInitialize: false,
-            afterInitialize: false,
-            beforeAddLiquidity: false,
-            beforeRemoveLiquidity: false,
-            afterAddLiquidity: false,
-            afterRemoveLiquidity: false,
-            beforeSwap: false,
-            afterSwap: true,
-            beforeDonate: false,
-            afterDonate: false,
-            beforeSwapReturnDelta: false,
-            afterSwapReturnDelta: false,
-            afterAddLiquidityReturnDelta: false,
-            afterRemoveLiquidityReturnDelta: false
-        });
+        return PointsHookPerms.permissions();
     }
 
     // Implement the ERC1155 `uri` function

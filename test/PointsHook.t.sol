@@ -48,20 +48,25 @@ contract TestPointsHook is Test, Deployers, ERC1155TokenReceiver {
         token.approve(address(modifyLiquidityRouter), type(uint256).max);
 
         // Pool (ETH, TOKEN) with hook
-        (key,) = initPool(ethCurrency, tokenCurrency, hook, 3000, SQRT_PRICE_1_1);
+        (key, ) = initPool(
+            ethCurrency,
+            tokenCurrency,
+            hook,
+            3000,
+            SQRT_PRICE_1_1
+        );
 
-        // Provide liquidity (0.1 ETH) around +/- 60 ticks
+                // Provide liquidity (0.1 ETH) around +/- 60 ticks
         uint160 sqrtPriceAtTickUpper = TickMath.getSqrtPriceAtTick(60);
         uint256 ethToAdd = 0.1 ether;
         uint128 liquidityDelta = LiquidityAmounts.getLiquidityForAmount0(SQRT_PRICE_1_1, sqrtPriceAtTickUpper, ethToAdd);
 
-        modifyLiquidityRouter.modifyLiquidity{value: ethToAdd}(
+        modifyLiquidityRouter.modifyLiquidity{
+            value: ethToAdd
+        }(
             key,
             ModifyLiquidityParams({
-                tickLower: -60,
-                tickUpper: 60,
-                liquidityDelta: int256(uint256(liquidityDelta)),
-                salt: bytes32(0)
+                tickLower: -60, tickUpper: 60, liquidityDelta: int256(uint256(liquidityDelta)), salt: bytes32(0)
             }),
             ZERO_BYTES
         );
@@ -80,12 +85,12 @@ contract TestPointsHook is Test, Deployers, ERC1155TokenReceiver {
     }
 
     function _swapExactEthIn(uint256 ethIn, address user) internal {
-        swapRouter.swap{value: ethIn}(
+        swapRouter.swap{
+            value: ethIn
+        }(
             key,
             SwapParams({
-                zeroForOne: true,
-                amountSpecified: -int256(ethIn),
-                sqrtPriceLimitX96: TickMath.MIN_SQRT_PRICE + 1
+                zeroForOne: true, amountSpecified: -int256(ethIn), sqrtPriceLimitX96: TickMath.MIN_SQRT_PRICE + 1
             }),
             PoolSwapTest.TestSettings({takeClaims: false, settleUsingBurn: false}),
             _hookData(user)
